@@ -34,7 +34,7 @@ from SiEPIC.scripts import connect_cell, connect_pins_with_waveguide, zoom_out, 
 from SiEPIC.utils.layout import new_layout, floorplan
 from SiEPIC.extend import to_itype
 from SiEPIC.verification import layout_check
-
+ 
 import os
 
 if Python_Env == 'Script':
