@@ -29,6 +29,16 @@
 
 The submission involves several steps. First, you need to create your design(s) using the process design kit (PDK) for this specific fabrication run. Then you need to create a Fork of this repository, commit your design(s), ensure that it passes the checks, and create a pull request. Once your pull request is approved, your design(s) will be merged into the layout for fabrication. You should verify that your design is correctly merged. Once the designs are fabricated, they will be tested, and the measurement results will be posted in this repository.
 
+## Design area, Design for Test, Design verification
+ - Each EBeam / openEBL design area allocation is 605 x 410 µm
+ - Wavelength for testing can be 1310 or 1550 nm, swept over a range of +/- 30 nm
+ - Grating couplers:
+   - should be facing right
+   - Cells: GC_SiN_TE_1550_8degOxide_BB or ebeam_GC_SiN_TE_1310_8deg, from the EBeam-SiN library
+   - The grating coupler that is second from the top should be labeled with an opt_in_TE_1310_device_designName label on the Text layer; it will be connected to the swept tunable laser
+   - The first, third and fourth grating couplers will be connected to detectors
+ - Design rules: the design must be error-free, namely passing the DRC manufacturing checks, and passing the Functional Layout Check (V in KLayout SiEPIC-Tools)
+
 ## Design software and PDK installation instructions:
  - Design tools and process design kit (SiEPIC-EBeam-PDK, KLayout implementation)<a href="https://github.com/siepic/SiEPIC_EBeam_PDK/wiki/Installation-instructions"> installation instructions</a>.
  - Create your design using Python ([example Jupyter notebook](https://colab.research.google.com/drive/1q3PU5ESmOa171J6KOkiUUlVXPnPBuCg-?usp=sharing), [example Python file](https://github.com/SiEPIC/openEBL-2024-10/blob/main/submissions/KLayout%20Python/EBeam_LukasChrostowski_MZI.py)) or using the Graphical Interface in KLayout
