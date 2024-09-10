@@ -97,7 +97,7 @@ instY1 = connect_cell(instTaper1, 'opt2', cell_ebeam_y, 'opt1')
 instTaper2 = connect_cell(instGC2, 'opt1', cell_ebeam_taper, 'opt1')
 instY2 = connect_cell(instTaper2, 'opt2', cell_ebeam_y, 'opt1')
 
-# Waveguides:
+# Waveguides: 
 
 connect_pins_with_waveguide(instY1, 'opt2', instY2, 'opt3', waveguide_type=waveguide_type2,turtle_B=[60,-90])
 connect_pins_with_waveguide(instY1, 'opt3', instY2, 'opt2', waveguide_type=waveguide_type2,turtle_B=[60+50,-90])
