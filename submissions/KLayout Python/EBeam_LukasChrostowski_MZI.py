@@ -38,15 +38,10 @@ from SiEPIC.verification import layout_check
 import os
 
 if Python_Env == 'Script':
-    try:
-        # For external Python mode, when installed using pip install siepic_ebeam_pdk
-        import siepic_ebeam_pdk
-    except:
-        # Load the PDK from a folder, e.g, GitHub, when running externally from the KLayout Application
-        import os, sys
-        path_GitHub = os.path.expanduser('~/Documents/GitHub/')
-        sys.path.insert(0,os.path.join(path_GitHub, 'SiEPIC_EBeam_PDK/klayout'))
-        import siepic_ebeam_pdk
+    # For external Python mode, when installed using pip install siepic_ebeam_pdk
+    import siepic_ebeam_pdk
+
+print('EBeam_LukasChrostowski_MZI layout script')
 
 tech_name = 'EBeam'
 
@@ -70,7 +65,7 @@ waveguide_type2='SiN Strip TE 1310 nm, w=800 nm'
 waveguide_type_delay='SiN routing TE 1550 nm (compound waveguide)'
 
 # Load cells from library
-cell_ebeam_gc = ly.create_cell('EBeam_GC_SiN_1310_8deg', 'EBeam-SiN', {})
+cell_ebeam_gc = ly.create_cell('ebeam_GC_SiN_TE_1310_8deg', 'EBeam-SiN', {})
 cell_ebeam_y = ly.create_cell('ebeam_YBranch_te1310',  'EBeam-SiN')
 cell_ebeam_taper = ly.create_cell('taper_bezier', 'EBeam_Beta',
                                {'wg_width1':0.75, 
