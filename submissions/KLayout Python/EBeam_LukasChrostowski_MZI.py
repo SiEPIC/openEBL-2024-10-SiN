@@ -1,7 +1,7 @@
 '''
 --- Simple MZI ---
   
-by Lukas Chrostowski, 2020-2024
+by Lukas Chrostowski, 2024
 
 
    
