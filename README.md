@@ -16,7 +16,7 @@
 ## Layer table
 | Name            | Layer/datatype | Description                                                                          |
 |-----------------|----------------|--------------------------------------------------------------------------------------|
-| SiN  | 1/5 | [Fabricated] Layer to draw silicon nitride geometries |
+| SiN  | 4/0 | [Fabricated] Layer to draw silicon nitride geometries |
 | Floorplan | 99/0 | [Virtual] Marks the layout design area |
 | Text | 10/0 | [Virtual] Text labels for automated measurements |
 | DevRec | 68/0 | [Virtual] Device recognition layer for component connectivity, netlist extraction, and verification|
