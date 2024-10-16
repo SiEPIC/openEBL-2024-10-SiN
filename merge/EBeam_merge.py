@@ -32,7 +32,7 @@ tr_cutout_x = 7037000
 tr_cutout_y = 8494000
 
 filename_out = 'EBeam'
-layers_keep = ['1/5','1/10', '68/0', '81/0', '10/0', '99/0', '26/0', '31/0', '32/0', '33/0', '998/0']
+layers_keep = ['1/5', '4/0', '1/10', '68/0', '81/0', '10/0', '99/0', '26/0', '31/0', '32/0', '33/0', '998/0']
 layer_text = '10/0'
 layer_SEM = '200/0'
 layer_SEM_allow = ['edXphot1x', 'ELEC413','SiEPIC_Passives']  # which submission folder is allowed to include SEM images
