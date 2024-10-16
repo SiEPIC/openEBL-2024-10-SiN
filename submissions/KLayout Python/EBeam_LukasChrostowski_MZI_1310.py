@@ -76,7 +76,7 @@ cell_ebeam_taper = ly.create_cell('taper_bezier', 'EBeam_Beta',
 
 
 # grating couplers, place at absolute positions
-x,y = 60000, 15000
+x,y = 60000, 16000
 t = Trans(Trans.R0,x,y)
 instGC1 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 t = Trans(Trans.R0,x,y+127000)
