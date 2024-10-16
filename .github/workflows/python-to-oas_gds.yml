@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: checkout repo content
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -32,8 +32,7 @@ jobs:
 
       - name: install python packages
         run: |
-          # python -m pip install --upgrade pip
-          pip install klayout SiEPIC siepic_ebeam_pdk
+          pip install klayout SiEPIC siepic_ebeam_pdk packaging
 
       - name: run python scripts and get output gds / oas file
         run: |
