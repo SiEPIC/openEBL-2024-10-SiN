@@ -67,7 +67,7 @@ waveguide_type_delay='SiN routing TE 1550 nm (compound waveguide)'
 cell_ebeam_gc = ly.create_cell('GC_SiN_TE_1550_8degOxide_BB', 'EBeam-SiN')
 
 # grating couplers, place at absolute positions
-x,y = 60000, 15000
+x,y = 60000, 20000
 t = Trans(Trans.R0,x,y)
 instGC1 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 t = Trans(Trans.R0,x,y+127000)
