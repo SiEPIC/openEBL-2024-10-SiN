@@ -34,7 +34,7 @@ The submission involves several steps. First, you need to create your design(s) 
  - Wavelength for testing can be 1310 or 1550 nm, swept over a range of +/- 30 nm
  - Grating couplers:
    - should be facing right
-   - Cells: GC_SiN_TE_1550_8degOxide_BB or ebeam_GC_SiN_TE_1310_8deg, from the EBeam-SiN library
+   - Cells: GC_SiN_TE_1550_8degOxide_BB or GC_SiN_TE_1310_8degOxide_BB, from the EBeam-SiN library
    - The grating coupler that is second from the top should be labeled with an opt_in_TE_1310_device_designName label on the Text layer; it will be connected to the swept tunable laser
    - The first, third and fourth grating couplers will be connected to detectors
  - Design rules: the design must be error-free, namely passing the DRC manufacturing checks, and passing the Functional Layout Check (V in KLayout SiEPIC-Tools)
