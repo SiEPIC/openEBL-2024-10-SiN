@@ -52,7 +52,7 @@ try:
    num_errors = layout_check(cell = top_cell, verbose=False, GUI=True, file_rdb=file_lyrdb)
 
    # Make sure layout extent fits within the allocated area.
-   cell_Width = 605000
+   cell_Width = 1000e3
    cell_Height = 410000
    bbox = top_cell.bbox()
    if bbox.width() > cell_Width or bbox.height() > cell_Height:

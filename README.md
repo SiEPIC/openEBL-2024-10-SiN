@@ -30,7 +30,7 @@
 The submission involves several steps. First, you need to create your design(s) using the process design kit (PDK) for this specific fabrication run. Then you need to create a Fork of this repository, commit your design(s), ensure that it passes the checks, and create a pull request. Once your pull request is approved, your design(s) will be merged into the layout for fabrication. You should verify that your design is correctly merged. Once the designs are fabricated, they will be tested, and the measurement results will be posted in this repository.
 
 ## Design area, Design for Test, Design verification
- - Each EBeam / openEBL design area allocation is 605 x 410 µm
+ - Each EBeam / openEBL design area allocation is 1000 x 410 µm
  - Wavelength for testing can be 1310 or 1550 nm, swept over a range of +/- 30 nm
  - Grating couplers:
    - should be facing right
