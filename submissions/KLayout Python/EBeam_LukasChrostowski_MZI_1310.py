@@ -65,7 +65,7 @@ waveguide_type2='SiN Strip TE 1310 nm, w=800 nm'
 waveguide_type_delay='SiN routing TE 1550 nm (compound waveguide)'
 
 # Load cells from library
-cell_ebeam_gc = ly.create_cell('ebeam_GC_SiN_TE_1310_8deg', 'EBeam-SiN', {})
+cell_ebeam_gc = ly.create_cell('GC_SiN_TE_1310_8degOxide_BB', 'EBeam-SiN')
 cell_ebeam_y = ly.create_cell('ebeam_YBranch_te1310',  'EBeam-SiN')
 cell_ebeam_taper = ly.create_cell('taper_bezier', 'EBeam_Beta',
                                {'wg_width1':0.75, 
@@ -76,7 +76,7 @@ cell_ebeam_taper = ly.create_cell('taper_bezier', 'EBeam_Beta',
 
 
 # grating couplers, place at absolute positions
-x,y = 60000, 16000
+x,y = 60000, 14500
 t = Trans(Trans.R0,x,y)
 instGC1 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 t = Trans(Trans.R0,x,y+127000)

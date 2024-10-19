@@ -17,7 +17,7 @@ Output
 # configuration
 tech_name = 'EBeam'
 top_cell_name = 'EBeam_2024_10_SiN'
-cell_Width = 605000
+cell_Width = 1000e3
 cell_Height = 410000
 cell_Gap_Width = 8000
 cell_Gap_Height = 8000
@@ -36,7 +36,7 @@ layers_keep = ['1/5', '4/0', '1/10', '68/0', '81/0', '10/0', '99/0', '26/0', '31
 layer_text = '10/0'
 layer_SEM = '200/0'
 layer_SEM_allow = ['edXphot1x', 'ELEC413','SiEPIC_Passives']  # which submission folder is allowed to include SEM images
-layers_move = [[[31,0],[1,0]]] # move shapes from layer 1 to layer 2
+layers_move = [[[31,0],[1,0]], [[1,5],[4,0]]] # move shapes from layer 1 to layer 2
 dbu = 0.001
 log_siepictools = False
 framework_file = 'EBL_Framework_1cm_PCM_static.oas'
@@ -103,15 +103,16 @@ log('SiEPIC-Tools %s, layout merge, running KLayout 0.%s.%s ' % (SiEPIC.__versio
 current_time = now.strftime("%Y-%m-%d, %H:%M:%S local time")
 log("Date: %s" % current_time)
 
-# Load all the GDS/OAS files from the "submissions" folder:
-path2 = os.path.abspath(os.path.join(path,"../submissions"))
 files_in = []
+
+# Load all the GDS/OAS files from the "framework" folder:
+path2 = os.path.abspath(os.path.join(path,"../framework"))
 _, _, files = next(os.walk(path2), (None, None, []))
 for f in sorted(files):
     files_in.append(os.path.join(path2,f))
 
-# Load all the GDS/OAS files from the "framework" folder:
-path2 = os.path.abspath(os.path.join(path,"../framework"))
+# Load all the GDS/OAS files from the "submissions" folder:
+path2 = os.path.abspath(os.path.join(path,"../submissions"))
 _, _, files = next(os.walk(path2), (None, None, []))
 for f in sorted(files):
     files_in.append(os.path.join(path2,f))
@@ -135,7 +136,7 @@ shape = cell_date.shapes(layout.layer(10,0)).insert(text)
 top_cell.insert(CellInstArray(cell_date.cell_index(), t))   
 
 # Origins for the layouts
-x,y = 0,cell_Height+cell_Gap_Height
+x,y = 110e3,cell_Height+cell_Gap_Height
 
 import subprocess
 import pandas as pd
@@ -224,11 +225,9 @@ for f in [f for f in files_in if '.oas' in f.lower() or '.gds' in f.lower()]:
             if cell.bbox().top < cell.bbox().bottom:
                 log(' - WARNING: empty layout. Skipping.')
                 break
-                
+            
             # Create sub-cell using the filename under course cell
             subcell2 = layout.create_cell(os.path.basename(f)+"_"+filedate)
-            t = Trans(Trans.R0, x,y)
-            cell_course.insert(CellInstArray(subcell2.cell_index(), t))
             
             # Clear extra layers
             layers_keep2 = [layer_SEM] if course in layer_SEM_allow else []
@@ -279,9 +278,40 @@ for f in [f for f in files_in if '.oas' in f.lower() or '.gds' in f.lower()]:
 
             # copy
             subcell.copy_tree(layout2.cell(cell2))  
+
+            # Check if this cell would overlap with other Floorplans, then move if necessary
+            def next_position(x, y, subcell, cell_Gap_Height, cell_Gap_Width, chip_Height, cell_Height, cell_Width):
+                # Measure the height of the cell that was added, and move up
+                y += cell_Gap_Height
+                if y + cell_Height > chip_Height:
+                    y = cell_Height + cell_Gap_Height
+                    x += cell_Width + cell_Gap_Width
+                return x, y
+            # Get Floorplan regions for the entire chip so far
+            Layer_FP = layout.find_layer(99,0)  # or use "layer"
+            iter1 = pya.RecursiveShapeIterator(layout, top_cell, Layer_FP )
+            r1 = pya.Region()
+            while not iter1.at_end():
+                # print("   - %s" % iter1.trans())
+                r1.insert(iter1.shape().polygon.transformed(iter1.trans())) 
+                iter1.next()        
+            r1.merge()
+            # print("   - Floorplan merged: %s" % r1)
+            
+            interacting = True
+            while interacting:
+                r2 = pya.Region(pya.Box(x,y, x+bbox2.width(),y+bbox2.height()))
+                interacting = r2.interacting(r1)
+                if interacting:
+                    # print("   - Overlapping Floorplan: %s" % r2.interacting(r1))
+                    x,y = next_position(x, y, subcell, cell_Gap_Height, cell_Gap_Width, chip_Height2, cell_Height, cell_Width)
+                    
+            # Insert cell instance in the chip
+            t = Trans(Trans.R0, x,y)
+            cell_course.insert(CellInstArray(subcell2.cell_index(), t))
             
             log('  - Placed at position: %s, %s' % (x,y) )
-                
+                        
             # Measure the height of the cell that was added, and move up
             y += max (cell_Height, subcell.bbox().height()) + cell_Gap_Height
             # move right and bottom when we reach the top of the chip

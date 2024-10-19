@@ -30,11 +30,11 @@
 The submission involves several steps. First, you need to create your design(s) using the process design kit (PDK) for this specific fabrication run. Then you need to create a Fork of this repository, commit your design(s), ensure that it passes the checks, and create a pull request. Once your pull request is approved, your design(s) will be merged into the layout for fabrication. You should verify that your design is correctly merged. Once the designs are fabricated, they will be tested, and the measurement results will be posted in this repository.
 
 ## Design area, Design for Test, Design verification
- - Each EBeam / openEBL design area allocation is 605 x 410 µm
+ - Each EBeam / openEBL design area allocation is 1000 x 410 µm
  - Wavelength for testing can be 1310 or 1550 nm, swept over a range of +/- 30 nm
  - Grating couplers:
    - should be facing right
-   - Cells: GC_SiN_TE_1550_8degOxide_BB or ebeam_GC_SiN_TE_1310_8deg, from the EBeam-SiN library
+   - Cells: GC_SiN_TE_1550_8degOxide_BB or GC_SiN_TE_1310_8degOxide_BB, from the EBeam-SiN library
    - The grating coupler that is second from the top should be labeled with an opt_in_TE_1310_device_designName label on the Text layer; it will be connected to the swept tunable laser
    - The first, third and fourth grating couplers will be connected to detectors
  - Design rules: the design must be error-free, namely passing the DRC manufacturing checks, and passing the Functional Layout Check (V in KLayout SiEPIC-Tools)
@@ -86,5 +86,5 @@ The verification and merging is performed using GitHub actions. The repository i
 
 ## Latest Merge Layout File
 <!-- start-link -->
-https://github.com/SiEPIC/openEBL-2024-10-SiN/actions/runs/11374741772/artifacts/2066075247
+https://github.com/SiEPIC/openEBL-2024-10-SiN/actions/runs/11408635486/artifacts/2075479756
 <!-- end-link -->

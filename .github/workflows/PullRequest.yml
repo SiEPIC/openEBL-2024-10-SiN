@@ -25,12 +25,29 @@ jobs:
             })
             const issues = await github.paginate(opts)
 
+            const PR_NUMBER = context.payload.pull_request.number;
+            const REPO_OWNER = context.repo.owner;
+            const REPO_NAME = context.repo.repo;
+            // Check if the 'greeted' label is already present
+            const { data: labels } = await github.rest.issues.listLabelsOnIssue({
+              owner: REPO_OWNER,
+              repo: REPO_NAME,
+              issue_number: PR_NUMBER,
+            });
+            const alreadyGreeted = labels.some(label => label.name === 'greeted');
+
+            // Don't post the message more than once.
+            if (alreadyGreeted) {
+              console.log(`PR #${PR_NUMBER} has already been greeted.`);
+              return 
+            }
+
             for (const issue of issues) {
               if (issue.number === context.issue.number) {
                 continue
               }
-
               if (issue.pull_request) {
+                console.log(`Creator #${creator} has already been greeted.`);
                 return // Creator is already a contributor.
               }
             }
@@ -44,10 +61,18 @@ jobs:
               Thank you for uploading your design.
 
               If you have not already checked it, please run the SiEPIC Functional Verification in KLayout, using the menu SiEPIC-Verification-Functional Layout Check (V).  
-          
-              Please note that we have added a new rule (on May 2, 2024) to SiEPIC-Tools and the EBeam PDK, so please make sure your tools are running the latest version. The rule is: The grating coupler spacing (pitch) must be at least 60.0 microns. This is to help avoid the probe station from accidentally aligning to an adjacent circuit. 
-          
+                    
               You may continue making updates to your design, or even contributing additonal designs (using a separate file name), until the tape-out deadline.
               `
             })
+
+            // Add the 'greeted' label to mark this PR as greeted
+            await github.rest.issues.addLabels({
+              owner: REPO_OWNER,
+              repo: REPO_NAME,
+              issue_number: PR_NUMBER,
+              labels: ['greeted'],
+            });
+
+            console.log(`Welcome message posted for PR #${PR_NUMBER}`);
 
