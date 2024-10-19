@@ -2,15 +2,16 @@
 --- Simple MZI ---
   
 by Lukas Chrostowski, 2024
-
-
    
 Example simple script to
- - create a new layout with a top cell
- - create an MZI
+ - choose the fabrication technology provided by Applied Nanotools,  using silicon nitride (SiN) waveguides
+ - use the SiEPIC-EBeam-PDK technology
+ - using KLayout and SiEPIC-Tools, with function including connect_pins_with_waveguide and connect_cell
+ - create a new layout with a top cell, limited a design area of 1000 microns wide by 410 microns high.
+ - create two Mach-Zehnder Interferometer (MZI) circuits, and one loopback for calibration
+   One Mach-Zehnder has a small path length difference, while the other uses a very long spiral.
  - export to OASIS for submission to fabrication
-
-using SiEPIC-Tools function including connect_pins_with_waveguide and connect_cell
+ - display the layout in KLayout using KLive
 
 Use instructions:
 
