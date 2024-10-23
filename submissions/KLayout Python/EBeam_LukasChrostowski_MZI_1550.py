@@ -79,7 +79,7 @@ instGC1 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 t = Trans(Trans.R0,x,y+127000)
 instGC2 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 # automated test label
-text = Text ("opt_in_TE_1550_device_%s_MZI" % designer_name, t)
+text = Text ("opt_in_TE_1550_device_%s_loopback" % designer_name, t)
 cell.shapes(ly.layer(ly.TECHNOLOGY['Text'])).insert(text).text_size = 5/dbu
 # Waveguide:
 connect_pins_with_waveguide(instGC1, 'opt1', instGC2, 'opt1', waveguide_type=waveguide_type1)
@@ -94,7 +94,7 @@ instGC3 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 t = Trans(Trans.R0,x,y+127000)
 instGC4 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 # automated test label
-text = Text ("opt_in_TE_1550_device_%s_loopback" % designer_name, t)
+text = Text ("opt_in_TE_1550_device_%s_MZI" % designer_name, t)
 cell.shapes(ly.layer(ly.TECHNOLOGY['Text'])).insert(text).text_size = 5/dbu
 # Y branches:
 instY1 = connect_cell(instGC3, 'opt1', cell_ebeam_y, 'pin1')
@@ -117,7 +117,7 @@ instGC1 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 t = Trans(Trans.R0,x,y+127e3)
 instGC2 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 # automated test label
-text = Text ("opt_in_TE_1550_device_%s_MZI3" % designer_name, t)
+text = Text ("opt_in_TE_1550_device_%s_MZI2" % designer_name, t)
 cell.shapes(ly.layer(ly.TECHNOLOGY['Text'])).insert(text).text_size = 5/dbu
 # Y branches:
 instY1 = connect_cell(instGC1, 'opt1', cell_ebeam_y, 'pin1')
