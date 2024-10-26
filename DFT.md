@@ -5,6 +5,7 @@
 
 ## Grating Couplers
 
+- area maximum: 610 µm wide, 405 µm high
 - 127 µm pitch, verically aligned, single column, connected circuits
 - up to 4 grating couplers
 - opt_in label format: opt_in_TE_1550_device_designerUniqueIndentifier
@@ -17,6 +18,7 @@
   
 ## Facet-attached Micro-Lenses (FaML)
 
+- area maximum: 1000 µm wide, 244 µm high
 - 127 µm pitch, verically aligned, single column, connected circuits
 - up to 3 lenses
 - opt_in label format: opt_in_TE_1550_FaML_designerUniqueIndentifier
