@@ -15,8 +15,14 @@ Jasmina Brar 12/08/23, and Lukas Chrostowski
 
 """
 
+cell_Width = 1000e3
+cell_Height = 500e3
+cell_FaML_width_extra = 100e3
+
+
 # gds file to run verification on
 gds_file = sys.argv[1]
+
 
 try:
    # load into layout
@@ -52,11 +58,13 @@ try:
    num_errors = layout_check(cell = top_cell, verbose=False, GUI=True, file_rdb=file_lyrdb)
 
    # Make sure layout extent fits within the allocated area.
-   cell_Width = 1000e3
-   cell_Height = 500e3
+   if 'faml' in filename.lower():
+      cell_Width_check = cell_Width + cell_FaML_width_extra
+   else:
+      cell_Width_check = cell_Width
    bbox = top_cell.bbox()
-   if bbox.width() > cell_Width or bbox.height() > cell_Height:
-      print('Error: Cell bounding box / extent (%s, %s) is larger than the maximum size of %s X %s microns' % (bbox.width()/1000, bbox.height()/1000, cell_Width/1000, cell_Height/1000) )
+   if bbox.width() > cell_Width_check or bbox.height() > cell_Height:
+      print('Error: Cell bounding box / extent (%s, %s) is larger than the maximum size of %s X %s microns' % (bbox.width()/1000, bbox.height()/1000, cell_Width_check/1000, cell_Height/1000) )
       num_errors += 1
 except:
    print('Unknown error occurred')
