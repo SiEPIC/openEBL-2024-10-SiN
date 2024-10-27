@@ -1,5 +1,5 @@
 '''
---- Simple MZI ---
+--- Simple MZI, tested using Facet-Attached Micro Lenses (FaML) ---
   
 by Lukas Chrostowski, 2024
    
@@ -12,6 +12,13 @@ Example simple script to
    One Mach-Zehnder has a small path length difference, while the other uses a very long spiral.
  - export to OASIS for submission to fabrication
  - display the layout in KLayout using KLive
+ 
+ Test plan
+ - count lenses from the bottom up (bottom is 1, top is 6, in this design)
+ - laser input on bottom lens (1), detector on second (2), for alignment
+ - MZI1: laser on 3, detector on 4, sweep
+ - MZI2: laser on 5, detector on 6, sweep
+ 
 
 Use instructions:
 
@@ -23,7 +30,7 @@ pip install required packages:
 '''
 
 designer_name = 'LukasChrostowski'
-top_cell_name = 'EBeam_%s_MZI' % designer_name
+top_cell_name = 'EBeam_%s_MZI2_FaML' % designer_name
 export_type = 'static'  # static: for fabrication, PCell: include PCells in file
 #export_type = 'PCell'  # static: for fabrication, PCell: include PCells in file
 
@@ -33,7 +40,7 @@ from pya import *
 import SiEPIC
 from SiEPIC._globals import Python_Env
 from SiEPIC.scripts import connect_cell, connect_pins_with_waveguide, zoom_out, export_layout
-from SiEPIC.utils.layout import new_layout, floorplan
+from SiEPIC.utils.layout import new_layout, floorplan, FaML_two
 from SiEPIC.extend import to_itype
 from SiEPIC.verification import layout_check
  
@@ -43,7 +50,7 @@ if Python_Env == 'Script':
     # For external Python mode, when installed using pip install siepic_ebeam_pdk
     import siepic_ebeam_pdk
 
-print('EBeam_LukasChrostowski_MZI layout script')
+print('EBeam_LukasChrostowski_MZI2 layout script')
  
 tech_name = 'EBeam'
 
@@ -57,7 +64,7 @@ with a top cell
 and Draw the floor plan
 '''    
 cell, ly = new_layout(tech_name, top_cell_name, GUI=True, overwrite = True)
-floorplan(cell, 1000e3, 410e3)
+floorplan(cell, 1000e3, 244e3)
 
 dbu = ly.dbu
 
@@ -66,70 +73,30 @@ waveguide_type1='SiN Strip TE 1550 nm, w=750 nm'
 waveguide_type_delay='SiN routing TE 1550 nm (compound waveguide)'
 
 # Load cells from library
-cell_ebeam_gc = ly.create_cell('GC_SiN_TE_1550_8degOxide_BB', 'EBeam-SiN')
 cell_ebeam_y = ly.create_cell('ANT_MMI_1x2_te1550_3dB_BB',  'EBeam-SiN')
-
-#######################
-# Circuit #1 – Loopback
-#######################
-# grating couplers, place at absolute positions
-x,y = 60000, 14500
-t = Trans(Trans.R0,x,y)
-instGC1 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
-t = Trans(Trans.R0,x,y+127000)
-instGC2 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
-# automated test label
-text = Text ("opt_in_TE_1550_device_%s_loopback" % designer_name, t)
-cell.shapes(ly.layer(ly.TECHNOLOGY['Text'])).insert(text).text_size = 5/dbu
-# Waveguide:
-connect_pins_with_waveguide(instGC1, 'opt1', instGC2, 'opt1', waveguide_type=waveguide_type1)
-
-#######################
-# Circuit #2 – MZI
-#######################
-x += 110e3
-# grating couplers, place at absolute positions
-t = Trans(Trans.R0,x,y)
-instGC3 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
-t = Trans(Trans.R0,x,y+127000)
-instGC4 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
-# automated test label
-text = Text ("opt_in_TE_1550_device_%s_MZI" % designer_name, t)
-cell.shapes(ly.layer(ly.TECHNOLOGY['Text'])).insert(text).text_size = 5/dbu
-# Y branches:
-instY1 = connect_cell(instGC3, 'opt1', cell_ebeam_y, 'pin1')
-instY2 = connect_cell(instGC4, 'opt1', cell_ebeam_y, 'pin1')
-# Waveguides: 
-connect_pins_with_waveguide(instY1, 'pin2', instY2, 'pin3', waveguide_type=waveguide_type1)
-connect_pins_with_waveguide(instY1, 'pin3', instY2, 'pin2', waveguide_type=waveguide_type1, turtle_A=[100,-90])
-
-#######################
-# Circuit #3 - MZI, with a very long delay line
-#######################
 cell_ebeam_delay = ly.create_cell('spiral_paperclip', 'EBeam_Beta',
                                 {'waveguide_type':waveguide_type_delay,
-                                'length':325,
+                                'length':319,
                                 'loops':8,
                                 'flatten':True})
-x,y = 60000, 14500+127e3*2
-t = Trans(Trans.R0,x,y)
-instGC1 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
-t = Trans(Trans.R0,x,y+127e3)
-instGC2 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
-# automated test label
-text = Text ("opt_in_TE_1550_device_%s_MZI2" % designer_name, t)
-cell.shapes(ly.layer(ly.TECHNOLOGY['Text'])).insert(text).text_size = 5/dbu
+
+#######################
+# Circuit #2 – MZI, with a very long delay line
+#######################
+# draw two edge couplers for facet-attached micro-lenses
+inst_faml = FaML_two(cell, 
+         label = "opt_in_TE_1550_FaML_mzi2_%s" % designer_name,
+         )  
+#c = inst_faml[0].cell
+#c.name = 'FaML2'
+#print(c.name  )
 # Y branches:
-instY1 = connect_cell(instGC1, 'opt1', cell_ebeam_y, 'pin1')
-instY1.transform(Trans(20000,0))
-instY2 = connect_cell(instGC2, 'opt1', cell_ebeam_y, 'pin1')
-instY2.transform(Trans(20000,0))
+instY2 = connect_cell(inst_faml[0], 'opt1', cell_ebeam_y, 'pin1')
+instY1 = connect_cell(inst_faml[1], 'opt1', cell_ebeam_y, 'pin1')
 # Spiral:
 instSpiral = connect_cell(instY2, 'pin2', cell_ebeam_delay, 'optA')
-instSpiral.transform(Trans(110e3,0))
+instSpiral.transform(pya.Trans(110e3,50e3))
 # Waveguides:
-connect_pins_with_waveguide(instGC1, 'opt1', instY1, 'pin1', waveguide_type=waveguide_type1)
-connect_pins_with_waveguide(instGC2, 'opt1', instY2, 'pin1', waveguide_type=waveguide_type1)
 connect_pins_with_waveguide(instY1, 'pin2', instY2, 'pin3', waveguide_type=waveguide_type1)
 connect_pins_with_waveguide(instY2, 'pin2', instSpiral, 'optA', waveguide_type=waveguide_type1)
 connect_pins_with_waveguide(instY1, 'pin3', instSpiral, 'optB', waveguide_type=waveguide_type1,turtle_A=[50,90])
