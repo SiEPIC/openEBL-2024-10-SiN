@@ -19,6 +19,7 @@
   - 2: input, laser
   - 3: output, to detector
   - 4 (bottom GC): output, to detector
+- See example: EBeam_LukasChrostowski_MZI_1550.oas
   
 ## Facet-attached Micro-Lenses (FaML)
 
@@ -35,6 +36,7 @@
   - 2 (middle FaML): output, to detector
   - 3 (middle FaML): output, to detector
   - 4 (bottom FaML): output, to detector
+- See example: EBeam_LukasChrostowski_MZI1_1550_FaML.oas
 
 ## Facet-attached Vertical Emitters (FAVE)
 
@@ -51,3 +53,4 @@
   - 2 (middle FAVE): output, to detector
   - 3 (middle FAVE): output, to detector
   - 4 (bottom FAVE): output, to detector
+- See example: EBeam_LukasChrostowski_MZI_1550_FAVE.oas

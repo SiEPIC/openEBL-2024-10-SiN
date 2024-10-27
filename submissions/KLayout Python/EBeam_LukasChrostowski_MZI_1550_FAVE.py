@@ -76,7 +76,7 @@ cell_ebeam_y = ly.create_cell('ANT_MMI_1x2_te1550_3dB_BB',  'EBeam-SiN')
 # draw two edge couplers for facet-attached vertical emitters
 inst_fave = FaML_two(cell, 
          label = "opt_in_TE_1550_FAVE_loopback_%s" % designer_name,
-         x_offset = 100e3,
+         x_offset = 195e3,
          y_offset = 59.5e3,
          cell_name = "ebeam_dream_FAVE_SiN_1550_BB",
          )  
@@ -89,7 +89,7 @@ connect_pins_with_waveguide(inst_fave[0], 'opt1', inst_fave[1], 'opt1', waveguid
 # draw two edge couplers for facet-attached vertical emitters
 inst_fave = FaML_two(cell, 
          label = "opt_in_TE_1550_FAVE_MZI1_%s" % designer_name,
-         x_offset = 100e3+275e3,
+         x_offset = 195e3+275e3,
          y_offset = 59.5e3,
          cell_name = "ebeam_dream_FAVE_SiN_1550_BB",
          )  
@@ -111,7 +111,7 @@ cell_ebeam_delay = ly.create_cell('spiral_paperclip', 'EBeam_Beta',
 # draw two edge couplers for facet-attached micro-lenses
 inst_fave = FaML_two(cell, 
          label = "opt_in_TE_1550_FAVE_MZI2_%s" % designer_name,
-         x_offset = 100e3,
+         x_offset = 195e3,
          y_offset = 59.5e3+254e3,
          cell_name = "ebeam_dream_FAVE_SiN_1550_BB",
          )  
@@ -125,31 +125,6 @@ connect_pins_with_waveguide(instY1, 'pin2', instY2, 'pin3', waveguide_type=waveg
 connect_pins_with_waveguide(instY2, 'pin2', instSpiral, 'optA', waveguide_type=waveguide_type1)
 connect_pins_with_waveguide(instY1, 'pin3', instSpiral, 'optB', waveguide_type=waveguide_type1,turtle_A=[50,90])
 
-'''
-
-x,y = 60000, 14500+127e3*2
-t = Trans(Trans.R0,x,y)
-instGC1 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
-t = Trans(Trans.R0,x,y+127e3)
-instGC2 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
-# automated test label
-text = Text ("opt_in_TE_1550_device_%s_MZI2" % designer_name, t)
-cell.shapes(ly.layer(ly.TECHNOLOGY['Text'])).insert(text).text_size = 5/dbu
-# Y branches:
-instY1 = connect_cell(instGC1, 'opt1', cell_ebeam_y, 'pin1')
-instY1.transform(Trans(20000,0))
-instY2 = connect_cell(instGC2, 'opt1', cell_ebeam_y, 'pin1')
-instY2.transform(Trans(20000,0))
-# Spiral:
-instSpiral = connect_cell(instY2, 'pin2', cell_ebeam_delay, 'optA')
-instSpiral.transform(Trans(110e3,0))
-# Waveguides:
-connect_pins_with_waveguide(instGC1, 'opt1', instY1, 'pin1', waveguide_type=waveguide_type1)
-connect_pins_with_waveguide(instGC2, 'opt1', instY2, 'pin1', waveguide_type=waveguide_type1)
-connect_pins_with_waveguide(instY1, 'pin2', instY2, 'pin3', waveguide_type=waveguide_type1)
-connect_pins_with_waveguide(instY2, 'pin2', instSpiral, 'optA', waveguide_type=waveguide_type1)
-connect_pins_with_waveguide(instY1, 'pin3', instSpiral, 'optB', waveguide_type=waveguide_type1,turtle_A=[50,90])
-'''
 
 # Zoom out
 zoom_out(cell)
