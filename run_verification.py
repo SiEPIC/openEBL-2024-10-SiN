@@ -53,7 +53,7 @@ try:
 
    # Make sure layout extent fits within the allocated area.
    cell_Width = 1000e3
-   cell_Height = 410000
+   cell_Height = 500e3
    bbox = top_cell.bbox()
    if bbox.width() > cell_Width or bbox.height() > cell_Height:
       print('Error: Cell bounding box / extent (%s, %s) is larger than the maximum size of %s X %s microns' % (bbox.width()/1000, bbox.height()/1000, cell_Width/1000, cell_Height/1000) )

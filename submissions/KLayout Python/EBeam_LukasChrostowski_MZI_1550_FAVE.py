@@ -1,24 +1,18 @@
 '''
---- Simple MZI, tested using Facet-Attached Micro Lenses (FaML) ---
+--- Simple MZI ---
   
 by Lukas Chrostowski, 2024
    
 Example simple script to
  - choose the fabrication technology provided by Applied Nanotools,  using silicon nitride (SiN) waveguides
  - use the SiEPIC-EBeam-PDK technology
+ - use face-attached vertical emitters (FAVE) from Dream Photonics, instead of grating couplers
  - using KLayout and SiEPIC-Tools, with function including connect_pins_with_waveguide and connect_cell
  - create a new layout with a top cell, limited a design area of 1000 microns wide by 410 microns high.
  - create two Mach-Zehnder Interferometer (MZI) circuits, and one loopback for calibration
    One Mach-Zehnder has a small path length difference, while the other uses a very long spiral.
  - export to OASIS for submission to fabrication
  - display the layout in KLayout using KLive
- 
- Test plan
- - count lenses from the bottom up (bottom is 1, top is 6, in this design)
- - laser input on bottom lens (1), detector on second (2), for alignment
- - MZI1: laser on 3, detector on 4, sweep
- - MZI2: laser on 5, detector on 6, sweep
- 
 
 Use instructions:
 
@@ -30,7 +24,7 @@ pip install required packages:
 '''
 
 designer_name = 'LukasChrostowski'
-top_cell_name = 'EBeam_%s_MZI2_FaML' % designer_name
+top_cell_name = 'EBeam_%s_MZI' % designer_name
 export_type = 'static'  # static: for fabrication, PCell: include PCells in file
 #export_type = 'PCell'  # static: for fabrication, PCell: include PCells in file
 
@@ -50,7 +44,7 @@ if Python_Env == 'Script':
     # For external Python mode, when installed using pip install siepic_ebeam_pdk
     import siepic_ebeam_pdk
 
-print('EBeam_LukasChrostowski_MZI2 layout script')
+print('EBeam_LukasChrostowski_MZI layout script')
  
 tech_name = 'EBeam'
 
@@ -64,7 +58,7 @@ with a top cell
 and Draw the floor plan
 '''    
 cell, ly = new_layout(tech_name, top_cell_name, GUI=True, overwrite = True)
-floorplan(cell, 1000e3, 244e3)
+floorplan(cell, 1000e3, 500e3)
 
 dbu = ly.dbu
 
@@ -73,26 +67,56 @@ waveguide_type1='SiN Strip TE 1550 nm, w=750 nm'
 waveguide_type_delay='SiN routing TE 1550 nm (compound waveguide)'
 
 # Load cells from library
+cell_ebeam_gc = ly.create_cell('ebeam_dream_FAVE_SiN_1550_BB', 'EBeam-Dream',{})
 cell_ebeam_y = ly.create_cell('ANT_MMI_1x2_te1550_3dB_BB',  'EBeam-SiN')
-cell_ebeam_delay = ly.create_cell('spiral_paperclip', 'EBeam_Beta',
-                                {'waveguide_type':waveguide_type_delay,
-                                'length':319,
-                                'loops':8,
-                                'flatten':True})
 
 #######################
-# Circuit #2 – MZI, with a very long delay line
+# Circuit #1 – Loopback
 #######################
-# draw two edge couplers for facet-attached micro-lenses
-inst_faml = FaML_two(cell, 
-         label = "opt_in_TE_1550_FaML_mzi2_%s" % designer_name,
+# draw two edge couplers for facet-attached vertical emitters
+inst_fave = FaML_two(cell, 
+         label = "opt_in_TE_1550_FAVE_loopback_%s" % designer_name,
+         x_offset = 100e3,
+         y_offset = 59.5e3,
+         cell_name = "ebeam_dream_FAVE_SiN_1550_BB",
          )  
-#c = inst_faml[0].cell
-#c.name = 'FaML2'
-#print(c.name  )
+# Waveguides:
+connect_pins_with_waveguide(inst_fave[0], 'opt1', inst_fave[1], 'opt1', waveguide_type=waveguide_type1)
+
+#######################
+# Circuit #2 – MZI
+#######################
+# draw two edge couplers for facet-attached vertical emitters
+inst_fave = FaML_two(cell, 
+         label = "opt_in_TE_1550_FAVE_MZI1_%s" % designer_name,
+         x_offset = 100e3+275e3,
+         y_offset = 59.5e3,
+         cell_name = "ebeam_dream_FAVE_SiN_1550_BB",
+         )  
 # Y branches:
-instY2 = connect_cell(inst_faml[0], 'opt1', cell_ebeam_y, 'pin1')
-instY1 = connect_cell(inst_faml[1], 'opt1', cell_ebeam_y, 'pin1')
+instY1 = connect_cell(inst_fave[1], 'opt1', cell_ebeam_y, 'pin1')
+instY2 = connect_cell(inst_fave[0], 'opt1', cell_ebeam_y, 'pin1')
+# Waveguides: 
+connect_pins_with_waveguide(instY1, 'pin2', instY2, 'pin3', waveguide_type=waveguide_type1)
+connect_pins_with_waveguide(instY1, 'pin3', instY2, 'pin2', waveguide_type=waveguide_type1, turtle_A=[100,-90])
+
+#######################
+# Circuit #3 - MZI, with a very long delay line
+#######################
+cell_ebeam_delay = ly.create_cell('spiral_paperclip', 'EBeam_Beta',
+                                {'waveguide_type':waveguide_type_delay,
+                                'length':269,
+                                'loops':8,
+                                'flatten':True})
+# draw two edge couplers for facet-attached micro-lenses
+inst_fave = FaML_two(cell, 
+         label = "opt_in_TE_1550_FAVE_MZI2_%s" % designer_name,
+         x_offset = 100e3,
+         y_offset = 59.5e3+254e3,
+         cell_name = "ebeam_dream_FAVE_SiN_1550_BB",
+         )  
+instY2 = connect_cell(inst_fave[0], 'opt1', cell_ebeam_y, 'pin1')
+instY1 = connect_cell(inst_fave[1], 'opt1', cell_ebeam_y, 'pin1')
 # Spiral:
 instSpiral = connect_cell(instY2, 'pin2', cell_ebeam_delay, 'optA')
 instSpiral.transform(pya.Trans(110e3,50e3))
@@ -101,6 +125,31 @@ connect_pins_with_waveguide(instY1, 'pin2', instY2, 'pin3', waveguide_type=waveg
 connect_pins_with_waveguide(instY2, 'pin2', instSpiral, 'optA', waveguide_type=waveguide_type1)
 connect_pins_with_waveguide(instY1, 'pin3', instSpiral, 'optB', waveguide_type=waveguide_type1,turtle_A=[50,90])
 
+'''
+
+x,y = 60000, 14500+127e3*2
+t = Trans(Trans.R0,x,y)
+instGC1 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
+t = Trans(Trans.R0,x,y+127e3)
+instGC2 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
+# automated test label
+text = Text ("opt_in_TE_1550_device_%s_MZI2" % designer_name, t)
+cell.shapes(ly.layer(ly.TECHNOLOGY['Text'])).insert(text).text_size = 5/dbu
+# Y branches:
+instY1 = connect_cell(instGC1, 'opt1', cell_ebeam_y, 'pin1')
+instY1.transform(Trans(20000,0))
+instY2 = connect_cell(instGC2, 'opt1', cell_ebeam_y, 'pin1')
+instY2.transform(Trans(20000,0))
+# Spiral:
+instSpiral = connect_cell(instY2, 'pin2', cell_ebeam_delay, 'optA')
+instSpiral.transform(Trans(110e3,0))
+# Waveguides:
+connect_pins_with_waveguide(instGC1, 'opt1', instY1, 'pin1', waveguide_type=waveguide_type1)
+connect_pins_with_waveguide(instGC2, 'opt1', instY2, 'pin1', waveguide_type=waveguide_type1)
+connect_pins_with_waveguide(instY1, 'pin2', instY2, 'pin3', waveguide_type=waveguide_type1)
+connect_pins_with_waveguide(instY2, 'pin2', instSpiral, 'optA', waveguide_type=waveguide_type1)
+connect_pins_with_waveguide(instY1, 'pin3', instSpiral, 'optB', waveguide_type=waveguide_type1,turtle_A=[50,90])
+'''
 
 # Zoom out
 zoom_out(cell)
