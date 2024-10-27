@@ -171,14 +171,15 @@ for f in [f for f in files_in if '.oas' in f.lower() or '.gds' in f.lower()]:
     course = 'openEBL'
     if 'ebeam' in basefilename.lower():
         course = 'edXphot1x'
-    if 'faml' in basefilename.lower():
-        course = 'FaML'
     if 'elec413' in basefilename.lower():
         course = 'ELEC413'
     if 'openebl' in basefilename.lower():
         course = 'openEBL'
     if 'siepic_passives' in basefilename.lower():
         course = 'SiEPIC_Passives'
+    # Last, all the edge coupler devices
+    if 'faml' in basefilename.lower():
+        course = 'FaML'
 
     cell_course = eval('cell_' + course)
     log("  - course name: %s" % (course) )
@@ -294,14 +295,8 @@ for f in [f for f in files_in if '.oas' in f.lower() or '.gds' in f.lower()]:
                 log('  - WARNING: Cell was clipped to maximum size of %s X %s' % (cell_Width +(cell_FaML_width_extra if course == 'FaML' else 0), cell_Height) )
                 log('  - clipped bounding box: %s' % bbox2.to_s() )
 
-            subcell.copy_tree(cell)  
-            '''
-            if course is not 'FaML':
-                # copy
-                subcell.copy_tree(layout2.cell(cell2))  
-            else:
-                subcell.copy_tree(cell)  
-            '''
+            # Copy the cropped version
+            subcell.copy_tree(layout2.cell(cell2))  
                 
             # Check if this cell would overlap with other Floorplans, then move if necessary
 
@@ -325,25 +320,27 @@ for f in [f for f in files_in if '.oas' in f.lower() or '.gds' in f.lower()]:
                     if type(instance) == pya.Cell:
                         cell = instance
                     else:
-                        cell = instance.cell()
+                        cell = instance.cell
                     for inst in cell.each_inst():
                         # log(' - looking for FaML instance: %s' % (inst.to_s()))
-                        if inst.cell.name == name:
-                            found_instances.append(inst)
+                        if name in inst.cell.name:
+                            found_instances.append([inst, inst.trans])
                             # log(' - Found FaML instance: %s, %s' % (inst.to_s(), inst.cell.name))
                         elif inst.cell.child_instances() > 0:
                             for f in sub_instances(inst,name):
-                                if f.cell.name == name:
-                                    found_instances.append(f)
+                                if name in f[0].cell.name:
+                                    f[1] *= inst.trans
+                                    found_instances.append(f) # .transform(inst.trans))
                     return found_instances
                 
-                found_faml_instances = sub_instances(layout2.top_cells()[0], name = 'ebeam_dream_FaML_SiN_1550_BB')
+#                found_faml_instances = sub_instances(layout2.top_cells()[0], name = 'ebeam_dream_FaML_SiN_1550_BB')
+                found_faml_instances = sub_instances(subcell2, name = 'ebeam_dream_FaML_SiN_1550_BB')
                 #for f in found_faml_instances:
                 #    log('  - Found FaML instance: %s, %s' % (f.to_s(), f.cell.name))
-                found_faml_instances.sort(key=lambda x: -x.cplx_trans.disp.y)
+                found_faml_instances.sort(key=lambda x: -x[1].disp.y)
                 for f in found_faml_instances:
-                    log('  - Found FaML instance (sorted): %s, %s' % (f.to_s(), f.cell.name))
-                top_FaML = found_faml_instances[0].cplx_trans.disp.y
+                    log('  - Found FaML instance (sorted): %s, %s' % (f[0].to_s(), f[0].cell.name))
+                top_FaML = found_faml_instances[0][1].disp.y
 
             else:
                 x_offset = 0
@@ -384,7 +381,7 @@ for f in [f for f in files_in if '.oas' in f.lower() or '.gds' in f.lower()]:
 
             if course == 'FaML':
                 # record placement of FaML
-                previous_top_FaML = found_faml_instances[0].cplx_trans.disp.y + y
+                previous_top_FaML = found_faml_instances[0][1].disp.y + y
                 log('  - top FaML position: %s' % (previous_top_FaML) )
                         
             # Measure the height of the cell that was added, and move up
