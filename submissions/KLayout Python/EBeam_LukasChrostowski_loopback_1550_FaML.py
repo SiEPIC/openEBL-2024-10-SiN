@@ -70,6 +70,7 @@ waveguide_type1='SiN Strip TE 1550 nm, w=750 nm'
 inst_faml = FaML_two(cell, 
          label = "opt_in_TE_1550_FaML_%s_loopback" % designer_name,
          y_offset = 50e3,
+         cell_params = None         
          )    
 # loopback waveguide
 connect_pins_with_waveguide(inst_faml[0], 'opt1', inst_faml[1], 'opt1', waveguide_type=waveguide_type1)

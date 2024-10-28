@@ -58,7 +58,7 @@ with a top cell
 and Draw the floor plan
 '''    
 cell, ly = new_layout(tech_name, top_cell_name, GUI=True, overwrite = True)
-floorplan(cell, 230e3, 481e3)
+floorplan(cell, 240e3, 481e3)
 
 waveguide_type1='SiN Strip TE 1550 nm, w=750 nm'
 waveguide_type_delay='SiN routing TE 1550 nm (compound waveguide)'
@@ -73,6 +73,7 @@ cell_ebeam_y = ly.create_cell('ANT_MMI_1x2_te1550_3dB_BB',  'EBeam-SiN')
 inst_faml = FaML_two(cell, 
          label = "opt_in_TE_1550_FaML_%s_Loopback" % designer_name,
          y_offset = 50e3+254e3*0,
+         cell_params = None
          )    
 # loopback waveguide
 connect_pins_with_waveguide(inst_faml[0], 'opt1', inst_faml[1], 'opt1', waveguide_type=waveguide_type1)

@@ -67,7 +67,7 @@ waveguide_type1='SiN Strip TE 1550 nm, w=750 nm'
 waveguide_type_delay='SiN routing TE 1550 nm (compound waveguide)'
 
 # Load cells from library
-cell_ebeam_gc = ly.create_cell('ebeam_dream_FAVE_SiN_1550_BB', 'EBeam-Dream',{})
+cell_ebeam_gc = ly.create_cell('ebeam_dream_FAVE_SiN_1550_BB', 'EBeam-Dream')
 cell_ebeam_y = ly.create_cell('ANT_MMI_1x2_te1550_3dB_BB',  'EBeam-SiN')
 
 #######################
@@ -76,9 +76,10 @@ cell_ebeam_y = ly.create_cell('ANT_MMI_1x2_te1550_3dB_BB',  'EBeam-SiN')
 # draw two edge couplers for facet-attached vertical emitters
 inst_fave = FaML_two(cell, 
          label = "opt_in_TE_1550_FAVE_loopback_%s" % designer_name,
-         x_offset = 195e3,
+         x_offset = 211e3,
          y_offset = 59.5e3,
          cell_name = "ebeam_dream_FAVE_SiN_1550_BB",
+         cell_params = None,
          )  
 # Waveguides:
 connect_pins_with_waveguide(inst_fave[0], 'opt1', inst_fave[1], 'opt1', waveguide_type=waveguide_type1)
@@ -89,9 +90,10 @@ connect_pins_with_waveguide(inst_fave[0], 'opt1', inst_fave[1], 'opt1', waveguid
 # draw two edge couplers for facet-attached vertical emitters
 inst_fave = FaML_two(cell, 
          label = "opt_in_TE_1550_FAVE_MZI1_%s" % designer_name,
-         x_offset = 195e3+275e3,
+         x_offset = 211e3+275e3,
          y_offset = 59.5e3,
          cell_name = "ebeam_dream_FAVE_SiN_1550_BB",
+         cell_params = None,
          )  
 # Y branches:
 instY1 = connect_cell(inst_fave[1], 'opt1', cell_ebeam_y, 'pin1')
@@ -105,15 +107,16 @@ connect_pins_with_waveguide(instY1, 'pin3', instY2, 'pin2', waveguide_type=waveg
 #######################
 cell_ebeam_delay = ly.create_cell('spiral_paperclip', 'EBeam_Beta',
                                 {'waveguide_type':waveguide_type_delay,
-                                'length':269,
+                                'length':261,
                                 'loops':8,
                                 'flatten':True})
 # draw two edge couplers for facet-attached micro-lenses
 inst_fave = FaML_two(cell, 
          label = "opt_in_TE_1550_FAVE_MZI2_%s" % designer_name,
-         x_offset = 195e3,
+         x_offset = 211e3,
          y_offset = 59.5e3+254e3,
          cell_name = "ebeam_dream_FAVE_SiN_1550_BB",
+         cell_params = None,
          )  
 instY2 = connect_cell(inst_fave[0], 'opt1', cell_ebeam_y, 'pin1')
 instY1 = connect_cell(inst_fave[1], 'opt1', cell_ebeam_y, 'pin1')
