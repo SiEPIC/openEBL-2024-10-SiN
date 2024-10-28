@@ -11,7 +11,10 @@
 - Baseline process:
   - Single full etch, using a negative resist (HSQ)
   - Oxide cladding
+  - Edge coupling
+- Facet-attached micro-lenses and vertical emitters
 - Process Design Kit: [SiEPIC-EBeam-PDK](https://github.com/siepic/SiEPIC_EBeam_PDK) 
+- [Design for Test rules](DFT.md)
 
 ## Layer table
 | Name            | Layer/datatype | Description                                                                          |
@@ -86,5 +89,5 @@ The verification and merging is performed using GitHub actions. The repository i
 
 ## Latest Merge Layout File
 <!-- start-link -->
-https://github.com/SiEPIC/openEBL-2024-10-SiN/actions/runs/11537286011/artifacts/2108524304
+https://github.com/SiEPIC/openEBL-2024-10-SiN/actions/runs/11545024737/artifacts/2109934610
 <!-- end-link -->
