@@ -76,7 +76,7 @@ waveguide_type_delay='SiN routing TE 1550 nm (compound waveguide)'
 cell_ebeam_y = ly.create_cell('ANT_MMI_1x2_te1550_3dB_BB',  'EBeam-SiN')
 cell_ebeam_delay = ly.create_cell('spiral_paperclip', 'EBeam_Beta',
                                 {'waveguide_type':waveguide_type_delay,
-                                'length':319,
+                                'length':311,
                                 'loops':8,
                                 'flatten':True})
 

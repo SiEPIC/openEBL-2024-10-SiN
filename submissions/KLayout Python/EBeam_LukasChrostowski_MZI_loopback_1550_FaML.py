@@ -58,7 +58,7 @@ with a top cell
 and Draw the floor plan
 '''    
 cell, ly = new_layout(tech_name, top_cell_name, GUI=True, overwrite = True)
-floorplan(cell, 230e3, 481e3)
+floorplan(cell, 240e3, 481e3)
 
 waveguide_type1='SiN Strip TE 1550 nm, w=750 nm'
 waveguide_type_delay='SiN routing TE 1550 nm (compound waveguide)'
