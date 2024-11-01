@@ -107,12 +107,14 @@ zoom_out(cell)
 
 # Export for fabrication, removing PCells
 path = os.path.dirname(os.path.realpath(__file__))
-filename, extension = os.path.splitext(os.path.basename(__file__))
-if export_type == 'static':
-    file_out = export_layout(cell, path, filename, relative_path = '..', format='oas', screenshot=True)
-else:
-    file_out = os.path.join(path,'..',filename+'.oas')
-    ly.write(file_out)
+for i in range(10):
+    filename, extension = os.path.splitext(os.path.basename(__file__))
+    filename+=f'_{i}'
+    if export_type == 'static':
+        file_out = export_layout(cell, path, filename, relative_path = '..', format='oas', screenshot=True)
+    else:
+        file_out = os.path.join(path,'..',filename+'.oas')
+        ly.write(file_out)
 
 # Verify
 file_lyrdb = os.path.join(path,filename+'.lyrdb')
