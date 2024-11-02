@@ -392,6 +392,10 @@ for f in [f for f in files_in if '.oas' in f.lower() or '.gds' in f.lower()]:
             else:
                 y += subcell.bbox().height() + cell_Gap_Height
             # move right and bottom when we reach the top of the chip
+            if y + cell_Height > chip_Height2:
+                y = cell_Height + cell_Gap_Height
+                x += cell_Width + cell_Gap_Width
+            '''
             if y + cell_Height > chip_Height1 and x == 0:
                 y = cell_Height + cell_Gap_Height
                 x += cell_Width + cell_Gap_Width
@@ -409,6 +413,7 @@ for f in [f for f in files_in if '.oas' in f.lower() or '.gds' in f.lower()]:
             # Check bottom right cutout #2 for PCM
             if x + cell_Width > br_cutout2_x and y < br_cutout2_y:
                 y = br_cutout2_y
+            '''
         else:
             log("  - WARNING: Top cell not merged (%s)" % cell.name)
 
