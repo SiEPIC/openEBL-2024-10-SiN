@@ -115,12 +115,28 @@ for f in sorted(files):
 # Load all the GDS/OAS files from the "submissions" folder:
 path2 = os.path.abspath(os.path.join(path,"../submissions"))
 _, _, files = next(os.walk(path2), (None, None, []))
+# Start with the edge coupled devices
 for f in sorted(files):
     if 'FaML' in f:
         files_in.append(os.path.join(path2,f))
+# Then all regular designs
+files_in_alphabetical = []
 for f in sorted(files):
-    if 'FaML' not in f:
-        files_in.append(os.path.join(path2,f))
+    if '.oas' in f.lower() or '.gds' in f.lower():
+        # print(f, path2)
+        if 'FaML' not in f:
+            fpath = os.path.join(path2,f)
+            layout2 = pya.Layout()
+            layout2.read(fpath)
+            top_cells = layout2.top_cells()
+            top_cells.sort(key=lambda x: x.child_instances())
+            w = top_cells[-1].bbox().width()
+            files_in_alphabetical.append ([w,fpath])
+# print(files_in_alphabetical)        
+# Then sort the regular designs by cell width
+for f in sorted(files_in_alphabetical, key = lambda x: x[0]):
+    files_in.append(os.path.join(path2,f[1]))
+
 
 # Create course cells using the folder name under the top cell
 cell_edXphot1x = layout.create_cell("edX")
@@ -145,6 +161,9 @@ top_cell.insert(CellInstArray(cell_date.cell_index(), t))
 # Origins for the layouts
 x,y = 110e3,cell_Height+cell_Gap_Height
 previous_top_FaML = None
+
+# Keep track of the width of the cells, for each column
+max_cell_Width = 0
 
 import subprocess
 import pandas as pd
@@ -345,13 +364,17 @@ for f in [f for f in files_in if '.oas' in f.lower() or '.gds' in f.lower()]:
             else:
                 x_offset = 0
 
+            # Track the maximum width of the cells, for each column
+            max_cell_Width = max(max_cell_Width, subcell2.bbox().right + x_offset)
+
             def next_position(x, y, cell_Gap_Height, cell_Gap_Width, chip_Height, cell_Height, cell_Width):
                 # Measure the height of the cell that was added, and move up
                 y += cell_Gap_Height
                 if y + cell_Height > chip_Height:
                     y = cell_Height + cell_Gap_Height
                     x += cell_Width + cell_Gap_Width
-                return x, y
+                    cell_Width = 0
+                return x, y, cell_Width
             
             interacting = True
             while interacting:
@@ -359,7 +382,7 @@ for f in [f for f in files_in if '.oas' in f.lower() or '.gds' in f.lower()]:
                 interacting = r2.interacting(r1)
                 if interacting:
                     # print("   - Overlapping Floorplan: %s" % r2.interacting(r1))
-                    x,y = next_position(x, y, cell_Gap_Height, cell_Gap_Width, chip_Height2, cell_Height, cell_Width)
+                    x,y, max_cell_Width = next_position(x, y, cell_Gap_Height, cell_Gap_Width, chip_Height2, cell_Height, max_cell_Width)
 
             if course == 'FaML':
                 # Check and snap to 127 µm pitch
@@ -394,7 +417,8 @@ for f in [f for f in files_in if '.oas' in f.lower() or '.gds' in f.lower()]:
             # move right and bottom when we reach the top of the chip
             if y + cell_Height > chip_Height2:
                 y = cell_Height + cell_Gap_Height
-                x += cell_Width + cell_Gap_Width
+                x += max_cell_Width + cell_Gap_Width
+                max_cell_Width = 0
             '''
             if y + cell_Height > chip_Height1 and x == 0:
                 y = cell_Height + cell_Gap_Height
