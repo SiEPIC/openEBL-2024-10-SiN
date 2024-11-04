@@ -2,15 +2,16 @@
 --- Simple MZI ---
   
 by Lukas Chrostowski, 2024
-
-
    
 Example simple script to
- - create a new layout with a top cell
- - create an MZI
+ - choose the fabrication technology provided by Applied Nanotools,  using silicon nitride (SiN) waveguides
+ - use the SiEPIC-EBeam-PDK technology
+ - using KLayout and SiEPIC-Tools, with function including connect_pins_with_waveguide and connect_cell
+ - create a new layout with a top cell, limited a design area of 1000 microns wide by 410 microns high.
+ - create two Mach-Zehnder Interferometer (MZI) circuits, and one loopback for calibration
+   One Mach-Zehnder has a small path length difference, while the other uses a very long spiral.
  - export to OASIS for submission to fabrication
-
-using SiEPIC-Tools function including connect_pins_with_waveguide and connect_cell
+ - display the layout in KLayout using KLive
 
 Use instructions:
 
@@ -23,8 +24,8 @@ pip install required packages:
 
 designer_name = 'LukasChrostowski'
 top_cell_name = 'EBeam_%s_MZI' % designer_name
-#export_type = 'static'  # static: for fabrication, PCell: include PCells in file
-export_type = 'PCell'  # static: for fabrication, PCell: include PCells in file
+export_type = 'static'  # static: for fabrication, PCell: include PCells in file
+#export_type = 'PCell'  # static: for fabrication, PCell: include PCells in file
 
 import pya
 from pya import *
@@ -78,7 +79,7 @@ instGC1 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 t = Trans(Trans.R0,x,y+127000)
 instGC2 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 # automated test label
-text = Text ("opt_in_TE_1550_device_%s_MZI" % designer_name, t)
+text = Text ("opt_in_TE_1550_device_%s_loopback" % designer_name, t)
 cell.shapes(ly.layer(ly.TECHNOLOGY['Text'])).insert(text).text_size = 5/dbu
 # Waveguide:
 connect_pins_with_waveguide(instGC1, 'opt1', instGC2, 'opt1', waveguide_type=waveguide_type1)
@@ -93,7 +94,7 @@ instGC3 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 t = Trans(Trans.R0,x,y+127000)
 instGC4 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 # automated test label
-text = Text ("opt_in_TE_1550_device_%s_loopback" % designer_name, t)
+text = Text ("opt_in_TE_1550_device_%s_MZI" % designer_name, t)
 cell.shapes(ly.layer(ly.TECHNOLOGY['Text'])).insert(text).text_size = 5/dbu
 # Y branches:
 instY1 = connect_cell(instGC3, 'opt1', cell_ebeam_y, 'pin1')
@@ -116,7 +117,7 @@ instGC1 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 t = Trans(Trans.R0,x,y+127e3)
 instGC2 = cell.insert(CellInstArray(cell_ebeam_gc.cell_index(), t))
 # automated test label
-text = Text ("opt_in_TE_1550_device_%s_MZI3" % designer_name, t)
+text = Text ("opt_in_TE_1550_device_%s_MZI2" % designer_name, t)
 cell.shapes(ly.layer(ly.TECHNOLOGY['Text'])).insert(text).text_size = 5/dbu
 # Y branches:
 instY1 = connect_cell(instGC1, 'opt1', cell_ebeam_y, 'pin1')
@@ -139,7 +140,7 @@ zoom_out(cell)
 
 # Export for fabrication, removing PCells
 path = os.path.dirname(os.path.realpath(__file__))
-filename = os.path.splitext(os.path.basename(__file__))[0]
+filename, extension = os.path.splitext(os.path.basename(__file__))
 if export_type == 'static':
     file_out = export_layout(cell, path, filename, relative_path = '..', format='oas', screenshot=True)
 else:

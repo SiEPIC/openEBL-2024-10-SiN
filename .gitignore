@@ -1,6 +1,6 @@
 merge/EBeam.oas
 merge/EBeam.txt
-
+*.lyrdb
 
 # Byte-compiled / optimized / DLL files
 */*.pyc

@@ -3,15 +3,18 @@
 
 - The Silicon Electronic Photonics Integrated Circuits (SiEPIC) fabrication program, <a href="https://siepic.ca/fabrication/">SiEPICfab</a>, presents the open electron beam lithography (EBL) fabrication process, where former and current students of <a href="https://siepic.ca/education/">SiEPIC</a> workshops and courses can submit their design for manufacturing and testing.
 - More details about <a href="https://siepic.ca/openEBL/">openEBL</a>.
-- **Submission deadline: October 21, 2024.**
+- **Submission deadline: extended to November 4, 2024.**
 
 # Fabrication process: Passive Silicon Nitride
 ## Technical summary:
-- SOI wafer, 400 nm silicon nitride (see the layer builder file [SiN.lbr](https://github.com/SiEPIC/SiEPIC_EBeam_PDK/blob/master/klayout/EBeam/SiN.lbr) for process bias and sidewall angle information)
+- SOI wafer, 400 nm silicon nitride (see the layer builder file [SiN.lbr](https://github.com/SiEPIC/SiEPIC_EBeam_PDK/blob/master/klayout/EBeam/SiN.lbr) for process bias and sidewall angle information), and [Applied Nanotools webpage](https://www.appliednt.com/nanosoi/sys/resources/rules_nitride/)
 - Baseline process:
   - Single full etch, using a negative resist (HSQ)
   - Oxide cladding
+  - Edge coupling
+- Facet-attached micro-lenses and vertical emitters, by Dream Photonics
 - Process Design Kit: [SiEPIC-EBeam-PDK](https://github.com/siepic/SiEPIC_EBeam_PDK) 
+- [Design for Test rules](DFT.md)
 
 ## Layer table
 | Name            | Layer/datatype | Description                                                                          |
@@ -29,15 +32,13 @@
 
 The submission involves several steps. First, you need to create your design(s) using the process design kit (PDK) for this specific fabrication run. Then you need to create a Fork of this repository, commit your design(s), ensure that it passes the checks, and create a pull request. Once your pull request is approved, your design(s) will be merged into the layout for fabrication. You should verify that your design is correctly merged. Once the designs are fabricated, they will be tested, and the measurement results will be posted in this repository.
 
-## Design area, Design for Test, Design verification
- - Each EBeam / openEBL design area allocation is 1000 x 410 µm
- - Wavelength for testing can be 1310 or 1550 nm, swept over a range of +/- 30 nm
- - Grating couplers:
-   - should be facing right
-   - Cells: GC_SiN_TE_1550_8degOxide_BB or GC_SiN_TE_1310_8degOxide_BB, from the EBeam-SiN library
-   - The grating coupler that is second from the top should be labeled with an opt_in_TE_1310_device_designName label on the Text layer; it will be connected to the swept tunable laser
-   - The first, third and fourth grating couplers will be connected to detectors
- - Design rules: the design must be error-free, namely passing the DRC manufacturing checks, and passing the Functional Layout Check (V in KLayout SiEPIC-Tools)
+## Design area, Design for Test
+ - [Design for Test rules](DFT.md)
+ 
+## Design verification
+ - Design Verification: the design must be error-free, namely passing 
+     - the DRC manufacturing checks, and 
+     - the Functional Layout Check ("V" in KLayout SiEPIC-Tools)
 
 ## Design software and PDK installation instructions:
  - Design tools and process design kit (SiEPIC-EBeam-PDK, KLayout implementation)<a href="https://github.com/siepic/SiEPIC_EBeam_PDK/wiki/Installation-instructions"> installation instructions</a>.
@@ -86,5 +87,5 @@ The verification and merging is performed using GitHub actions. The repository i
 
 ## Latest Merge Layout File
 <!-- start-link -->
-https://github.com/SiEPIC/openEBL-2024-10-SiN/actions/runs/11408635486/artifacts/2075479756
+https://github.com/SiEPIC/openEBL-2024-10-SiN/actions/runs/11649141051/artifacts/2137464787
 <!-- end-link -->
