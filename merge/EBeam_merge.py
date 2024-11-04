@@ -115,10 +115,23 @@ for f in sorted(files):
 # Load all the GDS/OAS files from the "submissions" folder:
 path2 = os.path.abspath(os.path.join(path,"../submissions"))
 _, _, files = next(os.walk(path2), (None, None, []))
-# Start with the edge coupled devices
+
+# Start with the edge coupled FaML devices
+files_in_alphabetical = []
 for f in sorted(files):
-    if 'FaML' in f:
-        files_in.append(os.path.join(path2,f))
+    if '.oas' in f.lower() or '.gds' in f.lower():
+        if 'FaML' in f:
+            fpath = os.path.join(path2,f)
+            layout2 = pya.Layout()
+            layout2.read(fpath)
+            top_cells = layout2.top_cells()
+            top_cells.sort(key=lambda x: x.child_instances())
+            w = top_cells[-1].bbox().width()
+            files_in_alphabetical.append ([w,fpath])
+# Then sort by cell width
+for f in sorted(files_in_alphabetical, key = lambda x: x[0]):
+    files_in.append(os.path.join(path2,f[1]))
+        
 # Then all regular designs
 files_in_alphabetical = []
 for f in sorted(files):
@@ -132,7 +145,6 @@ for f in sorted(files):
             top_cells.sort(key=lambda x: x.child_instances())
             w = top_cells[-1].bbox().width()
             files_in_alphabetical.append ([w,fpath])
-# print(files_in_alphabetical)        
 # Then sort the regular designs by cell width
 for f in sorted(files_in_alphabetical, key = lambda x: x[0]):
     files_in.append(os.path.join(path2,f[1]))

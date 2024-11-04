@@ -1,6 +1,6 @@
 '''
 --- Simple MZI, tested using Facet-Attached Micro Lenses (FaML) ---
-  
+   
 by Lukas Chrostowski, 2024
    
 Example simple script to
@@ -64,7 +64,7 @@ with a top cell
 and Draw the floor plan
 '''    
 cell, ly = new_layout(tech_name, top_cell_name, GUI=True, overwrite = True)
-floorplan(cell, 600e3, 244e3)
+floorplan(cell, 600e3, 229e3)
 
 dbu = ly.dbu
 
@@ -87,7 +87,8 @@ cell_ebeam_delay = ly.create_cell('spiral_paperclip', 'EBeam_Beta',
 # draw two edge couplers for facet-attached micro-lenses
 inst_faml = FaML_two(cell, 
          label = "opt_in_TE_1550_FaML_mzi2_%s" % designer_name,
-         cell_params = None
+         cell_params = None,
+         y_offset = 51e3,
          )  
 #c = inst_faml[0].cell
 #c.name = 'FaML2'
@@ -97,7 +98,7 @@ instY2 = connect_cell(inst_faml[0], 'opt1', cell_ebeam_y, 'pin1')
 instY1 = connect_cell(inst_faml[1], 'opt1', cell_ebeam_y, 'pin1')
 # Spiral:
 instSpiral = connect_cell(instY2, 'pin2', cell_ebeam_delay, 'optB')
-instSpiral.transform(pya.Trans(100e3,50e3))
+instSpiral.transform(pya.Trans(100e3,48e3))
 # Waveguides:
 connect_pins_with_waveguide(instY1, 'pin2', instY2, 'pin3', waveguide_type=waveguide_type1)
 connect_pins_with_waveguide(instY2, 'pin2', instSpiral, 'optB', waveguide_type=waveguide_type1)
