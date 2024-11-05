@@ -107,7 +107,7 @@ zoom_out(cell)
 
 # Export for fabrication, removing PCells
 path = os.path.dirname(os.path.realpath(__file__))
-for i in range(6):
+for i in range(3):
     filename, extension = os.path.splitext(os.path.basename(__file__))
     filename+=f'_{i}'
     if export_type == 'static':
