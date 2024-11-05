@@ -71,6 +71,7 @@ cell_taper_750_800 = ly.create_cell('taper_bezier',  'EBeam_Beta',
                                 {   'wg_width1':0.75,
                                     'wg_width2':0.8,
                                     'wg_length':1,
+                                    'silayer':pya.LayerInfo(4,0),
                                     }
                                     )
 if not cell_taper_750_800:
@@ -107,7 +108,7 @@ zoom_out(cell)
 
 # Export for fabrication, removing PCells
 path = os.path.dirname(os.path.realpath(__file__))
-for i in range(6):
+for i in range(3):
     filename, extension = os.path.splitext(os.path.basename(__file__))
     filename+=f'_{i}'
     if export_type == 'static':

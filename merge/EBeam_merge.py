@@ -341,8 +341,15 @@ for f in [f for f in files_in if '.oas' in f.lower() or '.gds' in f.lower()]:
                 r1.insert(iter1.shape().polygon.transformed(iter1.trans())) 
                 iter1.next()        
             r1.merge()
-            # print("   - Floorplan merged: %s" % r1)
-
+                
+            # Check that the design submission has a FloorPlan. If not, add one
+            Layer_FP = layout.find_layer(99,0)  # or use "layer"
+            r3 = pya.Region(subcell.begin_shapes_rec(Layer_FP))
+            if r3.is_empty():
+                print('  - WARNING: Cell %s did not have a Floor Plan, %s' % (subcell.name, f) )
+                log('  - WARNING: Cell %s did not have a Floor Plan, %s' % (subcell.name, f) )
+                subcell.shapes(Layer_FP).insert(subcell.bbox())
+                
             # offset for the facet-attached micro lenses
             if course == 'FaML':
                 x_offset = -100e3
