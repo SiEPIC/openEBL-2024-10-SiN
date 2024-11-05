@@ -51,6 +51,7 @@
   - SiEPIC_EBeam_PDK -> EBeam-Dream -> 
     - ebeam_dream_FAVE_SiN_1550_BB
     - should be facing right
+- The FaML cell contains the Thermal Isolation Trench layer, which needs to be 30 µm away from SiN -- both within the design, as well as neighbour designs. 
 - 127 µm pitch, verically aligned, single column, connected circuits
 - up to 4 emitters
 - opt_in label format: opt_in_TE_1550_***FAVE***_designerUniqueIndentifier
