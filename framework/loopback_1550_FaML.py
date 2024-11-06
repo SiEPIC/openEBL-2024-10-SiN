@@ -79,6 +79,12 @@ for i in range(int(height / 2/127e3)+1):
     # loopback waveguide
     connect_pins_with_waveguide(inst_faml[0], 'opt1', inst_faml[1], 'opt1', waveguide_type=waveguide_type1)
 
+    # Text label:
+    txt_mag = 30  # size of the printed device labels
+    cell_txt = ly.create_cell("TEXT", "Basic", {"text": str(i),
+                    "layer": pya.LayerInfo(4,0), "mag": txt_mag, "inverse":False})
+    cell.insert(pya.CellInstArray(cell_txt.cell_index(), pya.Trans(pya.Trans.R0, 20e3, (inst_faml[0].trans.disp.y+inst_faml[1].trans.disp.y)/2)))
+
 t = pya.Trans(pya.Trans.R180,0,0)
 topcell.insert(pya.CellInstArray(cell.cell_index(), t))
 
