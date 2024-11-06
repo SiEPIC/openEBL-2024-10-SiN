@@ -137,8 +137,7 @@ for f in sorted(files_in_alphabetical, key = lambda x: x[0]):
 files_in_alphabetical = []
 for f in sorted(files):
     if '.oas' in f.lower() or '.gds' in f.lower():
-        # print(f, path2)
-        if 'FaML' not in f:
+        if 'FaML' not in f and 'FAVE' not in f:
             fpath = os.path.join(path2,f)
             layout2 = pya.Layout()
             layout2.read(fpath)
@@ -148,6 +147,22 @@ for f in sorted(files):
             files_in_alphabetical.append ([w,fpath])
 # Then sort the regular designs by cell width
 for f in sorted(files_in_alphabetical, key = lambda x: x[0]):
+    files_in.append(os.path.join(path2,f[1]))
+
+# Then all FAVE designs
+files_in_alphabetical = []
+for f in sorted(files):
+    if '.oas' in f.lower() or '.gds' in f.lower():
+        if 'FAVE' in f:
+            fpath = os.path.join(path2,f)
+            layout2 = pya.Layout()
+            layout2.read(fpath)
+            top_cells = layout2.top_cells()
+            top_cells.sort(key=lambda x: x.child_instances())
+            w = top_cells[-1].bbox().width()
+            files_in_alphabetical.append ([w,fpath])
+# Then sort the designs by cell width
+for f in sorted(files_in_alphabetical, key = lambda x: -x[0]):
     files_in.append(os.path.join(path2,f[1]))
 
 
@@ -314,6 +329,20 @@ for f in [f for f in files_in if '.oas' in f.lower() or '.gds' in f.lower()]:
             # bounding box of the cell
             bbox = cell.bbox()
             log('  - bounding box: %s' % bbox.to_s() )
+
+            # Check that the design submission has a FloorPlan. If not, add one
+            layerinfo_FP = pya.LayerInfo(99,0)
+            Layer_FP = layout2.layer(layerinfo_FP)  # or use "layer"
+            r3 = pya.Region(cell.begin_shapes_rec(Layer_FP))
+            if r3.is_empty():
+                print('  - WARNING: Cell %s did not have a Floor Plan, %s' % (cell.name, f) )
+                log('  - WARNING: Cell %s did not have a Floor Plan, %s' % (cell.name, f) )
+                if 'FAVE' in f:
+                    # add extra space on the left
+                    print('  - Adding extra FloorPlan space to FAVE cell'  )
+                    bbox.left = bbox.left - 22e3
+                    # bbox = pya.Box(bbox.left - 22e3, bbox.bottom, bbox.right, bbox.top)
+                cell.shapes(Layer_FP).insert(bbox)
                             
             # Create sub-cell under subcell cell, using user's cell name
             subcell = layout.create_cell(cell.name)
@@ -341,15 +370,7 @@ for f in [f for f in files_in if '.oas' in f.lower() or '.gds' in f.lower()]:
                 r1.insert(iter1.shape().polygon.transformed(iter1.trans())) 
                 iter1.next()        
             r1.merge()
-                
-            # Check that the design submission has a FloorPlan. If not, add one
-            Layer_FP = layout.find_layer(99,0)  # or use "layer"
-            r3 = pya.Region(subcell.begin_shapes_rec(Layer_FP))
-            if r3.is_empty():
-                print('  - WARNING: Cell %s did not have a Floor Plan, %s' % (subcell.name, f) )
-                log('  - WARNING: Cell %s did not have a Floor Plan, %s' % (subcell.name, f) )
-                subcell.shapes(Layer_FP).insert(subcell.bbox())
-                
+                                
             # offset for the facet-attached micro lenses
             if course == 'FaML':
                 x_offset = -100e3

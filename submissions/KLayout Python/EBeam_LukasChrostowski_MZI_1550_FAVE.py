@@ -76,7 +76,7 @@ cell_ebeam_y = ly.create_cell('ANT_MMI_1x2_te1550_3dB_BB',  'EBeam-SiN')
 # draw two edge couplers for facet-attached vertical emitters
 inst_fave = FaML_two(cell, 
          label = "opt_in_TE_1550_FAVE_loopback_%s" % designer_name,
-         x_offset = 211e3,
+         x_offset = 210e3 + 22e3,
          y_offset = 59.5e3,
          cell_name = "ebeam_dream_FAVE_SiN_1550_BB",
          cell_params = None,
@@ -90,7 +90,7 @@ connect_pins_with_waveguide(inst_fave[0], 'opt1', inst_fave[1], 'opt1', waveguid
 # draw two edge couplers for facet-attached vertical emitters
 inst_fave = FaML_two(cell, 
          label = "opt_in_TE_1550_FAVE_MZI1_%s" % designer_name,
-         x_offset = 211e3+275e3,
+         x_offset = 210e3+275e3 + 22e3,
          y_offset = 59.5e3,
          cell_name = "ebeam_dream_FAVE_SiN_1550_BB",
          cell_params = None,
@@ -107,13 +107,13 @@ connect_pins_with_waveguide(instY1, 'pin3', instY2, 'pin2', waveguide_type=waveg
 #######################
 cell_ebeam_delay = ly.create_cell('spiral_paperclip', 'EBeam_Beta',
                                 {'waveguide_type':waveguide_type_delay,
-                                'length':261,
+                                'length':250,
                                 'loops':8,
                                 'flatten':True})
 # draw two edge couplers for facet-attached micro-lenses
 inst_fave = FaML_two(cell, 
          label = "opt_in_TE_1550_FAVE_MZI2_%s" % designer_name,
-         x_offset = 211e3,
+         x_offset = 210e3 + 22e3,
          y_offset = 59.5e3+254e3,
          cell_name = "ebeam_dream_FAVE_SiN_1550_BB",
          cell_params = None,
