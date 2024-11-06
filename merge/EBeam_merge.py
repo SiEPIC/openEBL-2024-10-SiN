@@ -105,13 +105,15 @@ log('SiEPIC-Tools %s, layout merge, running KLayout 0.%s.%s ' % (SiEPIC.__versio
 current_time = now.strftime("%Y-%m-%d, %H:%M:%S local time")
 log("Date: %s" % current_time)
 
-files_in = []
+files_in = [os.path.join(path,"../framework", framework_file)]
 
+'''
 # Load all the GDS/OAS files from the "framework" folder:
 path2 = os.path.abspath(os.path.join(path,"../framework"))
 _, _, files = next(os.walk(path2), (None, None, []))
 for f in sorted(files):
     files_in.append(os.path.join(path2,f))
+'''
 
 # Load all the GDS/OAS files from the "submissions" folder:
 path2 = os.path.abspath(os.path.join(path,"../submissions"))
