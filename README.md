@@ -85,6 +85,9 @@ The verification and merging is performed using GitHub actions. The repository i
 3) Performing Functional verification on the designs in the "submissions" folder, and outputing the errors as an Artifact
 4) Merging the designs from the "submissions" folder, and outputing merged layout as an Artifact in the main repository
 
+## Aggregated layout file
+- [EBeam_2024_11_05_2127.oas](EBeam_2024_11_05_2127.oas)
+
 ## Latest Merge Layout File
 <!-- start-link -->
 https://github.com/SiEPIC/openEBL-2024-10-SiN/actions/runs/11698397925/artifacts/2150640087
